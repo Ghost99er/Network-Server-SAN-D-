@@ -1,0 +1,234 @@
+Router 1
+Cisco 2800 series
+Version 12. 4
+line con 0 Password cit341
+secret cit341
+
+R1 F0/0 - Internet
+R1 F0/1 - G0/47 MLS1
+
+Current configuration : 4295 bytes
+!
+! Last configuration change at 20:30:27 UTC Tue Jun 20 2023
+! NVRAM config last updated at 20:34:50 UTC Tue Jun 20 2023
+!
+version 12.4
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no service password-encryption
+!
+hostname Router1
+!
+boot-start-marker
+boot-end-marker
+!
+! card type command needed for slot/vwic-slot 0/0
+enable secret 5 $1$bqCN$Cp41JDBDZOklrof8q4qID1
+!
+no aaa new-model
+!
+!
+ip cef
+ip auth-proxy max-nodata-conns 3
+ip admission max-nodata-conns 3
+no ip dhcp use vrf connected
+ip dhcp excluded-address 192.168.7.1 192.168.7.3
+ip dhcp excluded-address 192.168.27.1 192.168.27.3
+ip dhcp excluded-address 192.168.47.1 192.168.47.3
+ip dhcp excluded-address 192.168.67.1 192.168.67.3
+ip dhcp excluded-address 192.168.87.1 192.168.87.3
+ip dhcp excluded-address 192.168.107.1 192.168.107.3
+ip dhcp excluded-address 192.168.7.249 192.168.7.254
+ip dhcp excluded-address 192.168.27.249 192.168.27.254
+ip dhcp excluded-address 192.168.47.249 192.168.47.254
+ip dhcp excluded-address 192.168.67.249 192.168.67.254
+ip dhcp excluded-address 192.168.87.249 192.168.87.254
+ip dhcp excluded-address 192.168.107.249 192.168.107.254
+!
+ip dhcp pool vlan100
+   network 192.168.7.0 255.255.255.0
+   default-router 192.168.7.1
+!
+ip dhcp pool vlan120
+   network 192.168.27.0 255.255.255.0
+   default-router 192.168.27.1
+!
+ip dhcp pool vlan140
+   network 192.168.47.0 255.255.255.0
+   default-router 192.168.47.1
+!
+ip dhcp pool vlan160
+   network 192.168.67.0 255.255.255.0
+   default-router 192.168.67.1
+!
+ip dhcp pool vlan180
+   network 192.168.87.0 255.255.255.0
+   default-router 192.168.87.1
+!
+ip dhcp pool vlan200
+   network 192.168.107.0 255.255.255.0
+   default-router 192.168.107.1
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface FastEthernet0/0
+ no ip address
+ ip access-group ICMP-request in
+ duplex auto
+ speed auto
+!
+interface FastEthernet0/0.2007
+ encapsulation dot1Q 2007
+ ip address 192.168.242.28 255.255.255.224
+ vrrp 7 ip 192.168.242.30
+ vrrp 7 priority 200
+!
+interface FastEthernet0/0.2070
+ encapsulation dot1Q 2070
+ ip address 192.168.241.28 255.255.255.224
+ vrrp 70 ip 192.168.241.30
+!
+interface FastEthernet0/1
+ no ip address
+ duplex auto
+ speed auto
+!
+interface FastEthernet0/1.100
+ encapsulation dot1Q 100
+ ip address 192.168.7.2 255.255.255.0
+ vrrp 100 ip 192.168.7.1
+ vrrp 100 priority 150
+!
+interface FastEthernet0/1.120
+ encapsulation dot1Q 120
+ ip address 192.168.27.2 255.255.255.0
+ vrrp 120 ip 192.168.27.1
+ vrrp 120 priority 150
+!
+interface FastEthernet0/1.140
+ encapsulation dot1Q 140
+ ip address 192.168.47.2 255.255.255.0
+ vrrp 140 ip 192.168.47.1
+ vrrp 140 priority 150
+!
+interface FastEthernet0/1.160
+ encapsulation dot1Q 160
+ ip address 192.168.67.2 255.255.255.0
+ vrrp 160 ip 192.168.67.1
+ vrrp 160 priority 150
+!
+interface FastEthernet0/1.180
+ encapsulation dot1Q 180
+ ip address 192.168.87.2 255.255.255.0
+ vrrp 180 ip 192.168.87.1
+ vrrp 180 priority 150
+!
+interface FastEthernet0/1.200
+ encapsulation dot1Q 200
+ ip address 192.168.107.2 255.255.255.0
+ vrrp 200 ip 192.168.107.1
+ vrrp 200 priority 150
+!
+interface FastEthernet0/1.800
+ encapsulation dot1Q 800 native
+ no cdp enable
+!
+router ospf 7
+ log-adjacency-changes
+ network 192.168.242.0 0.0.0.31 area 7
+!
+router ospf 70
+ log-adjacency-changes
+ network 192.168.241.0 0.0.0.31 area 70
+!
+router ospf 100
+ log-adjacency-changes
+ network 192.168.7.0 0.0.0.255 area 7
+!
+router ospf 120
+ log-adjacency-changes
+ network 192.168.27.0 0.0.0.255 area 7
+!
+router ospf 140
+ log-adjacency-changes
+ network 192.168.47.0 0.0.0.255 area 7
+!
+router ospf 160
+ log-adjacency-changes
+ network 192.168.67.0 0.0.0.255 area 7
+!
+router ospf 180
+ log-adjacency-changes
+ network 192.168.87.0 0.0.0.255 area 7
+!
+router ospf 200
+ log-adjacency-changes
+ network 192.168.107.0 0.0.0.255 area 7
+!
+ip forward-protocol nd
+!
+ip http server
+no ip http secure-server
+!
+ip access-list standard S-ACL
+ permit 0.0.0.0 255.255.255.0
+ip access-list standard san1
+ permit 0.0.0.0 255.255.255.0
+!
+ip access-list extended ICMP-request
+ deny   icmp any any
+ permit ip any any
+!
+access-list 21 permit 0.0.0.0 255.255.255.0
+no cdp run
+!
+!
+control-plane
+!
+!
+!
+line con 0
+ password cit341
+ login
+line aux 0
+line vty 0 4
+ access-class 21 in
+ login
+!
+scheduler allocate 20000 1000
+ntp clock-period 17179314
+ntp server 172.16.99.1
+
+
+
+FastEthernet0/0.2007 - Group 7
+  State is Init
+  Virtual IP address is 192.168.242.30
+  Virtual MAC address is 0000.5e00.0107
+  Advertisement interval is 1.000 sec
+  Preemption enabled
+  Priority is 200
+  Master Router is unknown, priority is unknown
+  Master Advertisement interval is unknown
+  Master Down interval is unknown
+FastEthernet0/0.2070 - Group 70
+  State is Init
+  Virtual IP address is 192.168.241.30
+  Virtual MAC address is 0000.5e00.0146
+  Advertisement interval is 1.000 sec
+  Preemption enabled
+  Priority is 100
+  Master Router is unknown, priority is unknown
+  Master Advertisement interval is unknown
+  Master Down interval is unknown
+
+
